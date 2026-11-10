@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,11 +17,23 @@ export const Route = createFileRoute("/")({
 
 type Phase = "idle" | "spinning" | "active";
 
-function Windmill({ fast }: { fast: boolean }) {
+function Windmill() {
+  const ref = useRef<SVGGElement>(null);
+  useEffect(() => {
+    let angle = 0, speed = 0.5, raf = 0;
+    const tick = () => {
+      speed = Math.min(speed * 1.02 + 0.05, 40);
+      angle = (angle + speed) % 360;
+      ref.current?.setAttribute("transform", `rotate(${angle} 100 100)`);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
   return (
-    <svg viewBox="0 0 200 260" className="h-64 w-52" aria-label="Windmill">
+    <svg viewBox="0 0 200 260" className="windmill-glow h-64 w-52" aria-label="Windmill">
       <polygon points="92,100 108,100 125,255 75,255" className="fill-muted-foreground" />
-      <g className={fast ? "windmill-fast" : "windmill-slow"} style={{ transformOrigin: "100px 100px" }}>
+      <g ref={ref}>
         {[0, 90, 180, 270].map((r) => (
           <path key={r} d="M100 100 L92 20 Q100 8 108 20 Z" transform={`rotate(${r} 100 100)`} className="fill-primary" />
         ))}
@@ -42,7 +54,7 @@ function Index() {
   return (
     <main className="hero-bg flex min-h-screen flex-col items-center justify-center gap-10 px-6 text-center">
       <div>
-        <h1 className="text-6xl font-black tracking-tight text-foreground md:text-8xl">
+        <h1 className="text-6xl font-black tracking-tight glow-text text-foreground md:text-8xl">
           Ezio<span className="text-primary">Cloud</span>
         </h1>
         <p className="mt-4 text-muted-foreground">Powered by the Hyper-Engine</p>
@@ -56,7 +68,7 @@ function Index() {
 
       {phase !== "idle" && (
         <div className="flex flex-col items-center gap-6">
-          <Windmill fast />
+          <Windmill />
           {phase === "spinning" ? (
             <p className="animate-pulse font-semibold text-primary">Spinning up Hyper-Engine…</p>
           ) : (

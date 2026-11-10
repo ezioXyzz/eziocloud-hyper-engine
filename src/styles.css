@@ -155,14 +155,16 @@
 }
 
 :root {
-  --background: oklch(0.15 0.02 20);
-  --foreground: oklch(0.97 0.01 20);
-  --primary: oklch(0.6 0.24 27);
+  --background: oklch(0.1 0.02 300);
+  --foreground: oklch(0.97 0.02 300);
+  --primary: oklch(0.62 0.27 305);
   --primary-foreground: oklch(0.98 0 0);
-  --muted-foreground: oklch(0.7 0.03 20);
+  --muted-foreground: oklch(0.72 0.06 300);
 }
-.hero-bg { background: radial-gradient(circle at 50% 30%, oklch(0.25 0.08 25), var(--background) 70%); }
-.engine-btn { box-shadow: 0 0 40px -5px var(--primary); transition: transform .2s; }
-.engine-btn:hover { transform: scale(1.05); }
-.windmill-fast { animation: spin-wm .25s linear infinite; }
-@keyframes spin-wm { to { transform: rotate(360deg); } }
+.hero-bg { background: radial-gradient(circle at 50% 30%, oklch(0.25 0.12 305), var(--background) 70%); }
+.glow-text { text-shadow: 0 0 24px var(--primary); }
+.engine-btn { box-shadow: 0 0 30px -5px var(--primary); transition: transform .2s, box-shadow .2s; animation: pulse-glow 2s ease-in-out infinite; }
+.engine-btn:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 0 60px 0 var(--primary); }
+.engine-btn:active { transform: scale(0.94); }
+@keyframes pulse-glow { 50% { box-shadow: 0 0 50px 0 var(--primary); } }
+.windmill-glow { filter: drop-shadow(0 0 14px var(--primary)); }
